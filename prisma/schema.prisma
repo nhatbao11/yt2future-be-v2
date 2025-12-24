@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String
+  fullName  String
+  role      Role       @default(MEMBER)
+  createdAt DateTime   @default(now())
+  avatarUrl String?
+  feedbacks Feedback[]
+  viewLogs  ViewLog[]
+}
+
+model Author {
+  id        String   @id @default(uuid())
+  name      String
+  avatar    String?
+  roleTitle String
+  bio       String?
+  reports   Report[]
+}
+
+model Category {
+  id      Int          @id @default(autoincrement())
+  name    String
+  slug    String       @unique
+  type    CategoryType
+  books   Book[]
+  reports Report[]
+}
+
+model Report {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  description String?
+  content     String?
+  thumbnail   String?
+  pdfUrl      String
+  ticker      String?
+  viewCount   Int       @default(0)
+  isPremium   Boolean   @default(false)
+  categoryId  Int
+  authorId    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  author      Author    @relation(fields: [authorId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id])
+  viewLogs    ViewLog[]
+}
+
+model Book {
+  id          String   @id @default(uuid())
+  title       String
+  authorName  String
+  description String?
+  thumbnail   String?
+  pdfUrl      String
+  categoryId  Int
+  createdAt   DateTime @default(now())
+  category    Category @relation(fields: [categoryId], references: [id])
+}
+
+model ViewLog {
+  id           String   @id @default(uuid())
+  reportId     String
+  userId       String?
+  ipAddress    String
+  guestSession String?
+  createdAt    DateTime @default(now())
+  report       Report   @relation(fields: [reportId], references: [id])
+  user         User?    @relation(fields: [userId], references: [id])
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  content   String
+  status    String   @default("PENDING")
+  userId    String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum CategoryType {
+  SECTOR
+  BUSINESS
+  KNOWLEDGE
+  BOOK
+}

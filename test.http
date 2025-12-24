@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:5000
+
+### 1. KIỂM TRA SERVER (PING)
+GET {{baseUrl}}/
+
+### 2. ĐĂNG KÝ TÀI KHOẢN ADMIN (Chạy cái này trước)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "nhatbao@gmail.com",
+    "password": "nhatbao2212@",
+    "fullName": "Nhất Bảo Admin"
+}
+
+### 3. ĐĂNG NHẬP ĐỂ LẤY TOKEN
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "nhatbao@gmail.com",
+    "password": "nhatbao2212@"
+}
