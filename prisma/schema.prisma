@@ -89,9 +89,20 @@ model Feedback {
   user      User?    @relation(fields: [userId], references: [id])
 }
 
+model AuditLog {
+  id             String   @id @default(cuid())
+  adminId        String
+  adminName      String
+  adminAvatarUrl String?  // THÊM DÒNG NÀY: Lưu URL ảnh đại diện của Admin
+  action         String
+  target         String
+  createdAt      DateTime @default(now())
+}
+
 enum Role {
   ADMIN
   MEMBER
+  USER
 }
 
 enum CategoryType {

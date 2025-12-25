@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser'; // Đảm bảo đã npm i cookie-parser
 import authRoutes from './routes/authRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import feedbackRoutes from './routes/feedbackRoutes.js';
+
 
 dotenv.config();
 
@@ -24,6 +27,9 @@ app.use(express.json());
 
 // 3. Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/admin/feedback', feedbackRoutes);
 
 app.get('/', (req, res) => {
   res.send('Y&T Capital API đang chạy với chế độ Cookie an toàn...');
