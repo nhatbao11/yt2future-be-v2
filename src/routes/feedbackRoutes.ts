@@ -9,5 +9,10 @@ router.get('/home', feedbackController.getHomeFeedbacks);
 router.get('/pending', verifyToken, isAdmin, feedbackController.getPendingFeedbacks);
 router.get('/all', verifyToken, isAdmin, feedbackController.getAllFeedbacks);
 router.post('/review', verifyToken, isAdmin, feedbackController.reviewFeedback);
+// Đường dẫn thực tế sẽ là: /api/admin/feedback/pending
+// router.get('/pending', verifyToken, isAdmin, feedbackController.getPendingFeedbacks);
+
+// // Đường dẫn thực tế sẽ là: /api/admin/feedback/all
+// router.get('/all', verifyToken, isAdmin, feedbackController.getAllFeedbacks);
 
 export default router;
