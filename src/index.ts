@@ -26,21 +26,22 @@ console.log(">>> [System] Cloudinary:", process.env.CLOUDINARY_CLOUD_NAME ? "REA
 
 // B. MIDDLEWARES
 app.use(cookieParser());
-origin: (origin, callback) => {
-  const allowedOrigins = [process.env.FRONTEND_URL || 'https://yt2future.com', 'http://localhost:3000'];
-  // Cho phép nếu:
-  // 1. Không có origin (Postman/Server-to-Server)
-  // 2. Nằm trong danh sách cứng (local, domain chính)
-  // 3. Là subdomain của vercel.app (cho Preview Deploy)
-  if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
-    callback(null, true);
-  } else {
-    callback(new Error('Biến đi! CORS không cho phép.'));
-  }
-},
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = [process.env.FRONTEND_URL || 'https://yt2future.com', 'http://localhost:3000'];
+    // Cho phép nếu:
+    // 1. Không có origin (Postman/Server-to-Server)
+    // 2. Nằm trong danh sách cứng (local, domain chính)
+    // 3. Là subdomain của vercel.app (cho Preview Deploy)
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Biến đi! CORS không cho phép.'));
+    }
+  },
   credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // --- ĐOẠN FIX LỖI NẰM Ở ĐÂY ---
