@@ -27,7 +27,7 @@ console.log(">>> [System] Cloudinary:", process.env.CLOUDINARY_CLOUD_NAME ? "REA
 // B. MIDDLEWARES
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: [process.env.FRONTEND_URL || 'https://yt2future.com', 'https://yt2future-f2.vercel.app', 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
