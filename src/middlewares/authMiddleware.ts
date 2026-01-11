@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret_key_cua_yt_capital';
  * Sửa lại để gán 'id' thay vì 'userId' cho khớp với Prisma và Controller
  */
 export const verifyToken = (req: any, res: Response, next: NextFunction) => {
-  const token = req.cookies['yt_capital_token'];
+  const token = req.cookies['yt2future_token'];
 
   if (!token) {
     return res.status(401).json({

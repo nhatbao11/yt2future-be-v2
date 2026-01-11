@@ -1,6 +1,6 @@
-﻿# Y&T CAPITAL - BACKEND API 🚀
+﻿# YT2FUTURE - BACKEND API 🚀
 
-Hệ thống cung cấp dịch vụ xác thực, quản trị nội dung và dữ liệu thị trường cho Y&T Capital.
+Hệ thống cung cấp dịch vụ xác thực, quản trị nội dung và dữ liệu thị trường cho YT2Future.
 
 ## 📝 Giới thiệu
 Backend được xây dựng để xử lý các nghiệp vụ cốt lõi bao gồm quản lý người dùng (RBAC), lưu trữ bài viết phân tích và làm cầu nối (Bridge) lấy dữ liệu chứng khoán thời gian thực từ các nguồn dữ liệu tài chính.
@@ -27,4 +27,4 @@ backend/
 ├── .env                # Biến môi trường (Secret Keys, Database URL)
 └── server.js           # Điểm khởi đầu của ứng dụng
 
-© 2025 Y&T Capital - Shaping Tomorrow through agile innovation
+© 2025 YT2Future - Shaping Tomorrow through agile innovation

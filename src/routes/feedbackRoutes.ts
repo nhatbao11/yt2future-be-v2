@@ -9,6 +9,7 @@ router.get('/home', feedbackController.getHomeFeedbacks);
 router.get('/pending', verifyToken, isAdmin, feedbackController.getPendingFeedbacks);
 router.get('/all', verifyToken, isAdmin, feedbackController.getAllFeedbacks);
 router.post('/review', verifyToken, isAdmin, feedbackController.reviewFeedback);
+router.delete('/:id', verifyToken, isAdmin, feedbackController.deleteFeedback);
 // Đường dẫn thực tế sẽ là: /api/admin/feedback/pending
 // router.get('/pending', verifyToken, isAdmin, feedbackController.getPendingFeedbacks);
 

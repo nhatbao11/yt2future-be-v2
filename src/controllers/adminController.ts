@@ -117,3 +117,27 @@ export const getAuditLogs = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Lỗi truy xuất nhật ký" });
   }
 };
+
+// 5. Lấy thống kê Dashboard (MỚI)
+export const getDashboardStats = async (req: Request, res: Response) => {
+  try {
+    const [totalUsers, totalReports, pendingReports, totalCategories] = await Promise.all([
+      prisma.user.count(),
+      prisma.report.count({ where: { status: 'APPROVED' } }), // Chỉ đếm bài đã duyệt là "Báo cáo đã đăng"
+      prisma.report.count({ where: { status: 'PENDING' } }),
+      prisma.category.count()
+    ]);
+
+    res.json({
+      success: true,
+      stats: {
+        totalUsers,
+        totalReports,
+        pendingReports,
+        totalCategories
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi lấy thống kê dashboard" });
+  }
+};

@@ -25,7 +25,7 @@ export const login = async (req: Request, res: Response) => {
     const { token, user } = await AuthService.loginUser(req.body);
 
     // Lưu Token vào Cookie để các Request sau tự đính kèm
-    res.cookie('yt_capital_token', token, {
+    res.cookie('yt2future_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -36,7 +36,8 @@ export const login = async (req: Request, res: Response) => {
     return res.json({
       success: true,
       message: 'Đăng nhập thành công sếp ơi!',
-      user
+      user,
+      token // Trả về Token để FE (Server Action) có thể lấy và set Cookie
     });
   } catch (error: any) {
     res.status(400).json({ success: false, message: error.message });
@@ -61,7 +62,7 @@ export const getMe = async (req: any, res: Response) => {
  * 4. ĐĂNG XUẤT
  */
 export const logout = (req: Request, res: Response) => {
-  res.clearCookie('yt_capital_token', { path: '/', httpOnly: true, sameSite: 'lax' });
+  res.clearCookie('yt2future_token', { path: '/', httpOnly: true, sameSite: 'lax' });
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   return res.status(200).json({ success: true, message: 'Đã đăng xuất thành công!' });
 };
@@ -76,7 +77,7 @@ export const grantGoogleRole = async (req: Request, res: Response) => {
     const profile = req.body;
     const { token, user } = await AuthService.grantGoogleRole(profile);
 
-    res.cookie('yt_capital_token', token, {
+    res.cookie('yt2future_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

@@ -55,7 +55,7 @@ app.use('/api/reports', reportRoutes); // Đường dẫn này sẽ map với re
 app.use('/api/categories', categoryRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Y&T Capital API đang chạy với chế độ Cookie và Cloudinary sẵn sàng...');
+  res.send('YT2Future API đang chạy với chế độ Cookie và Cloudinary sẵn sàng...');
 });
 
 // D. START SERVER VÀ FIX TIMEOUT

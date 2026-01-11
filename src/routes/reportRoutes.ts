@@ -22,4 +22,8 @@ router.post('/add',
   reportController.createReport
 );
 
+// 5. ROUTE SỬA/XÓA
+router.delete('/:id', verifyToken, isAdmin, reportController.deleteReport);
+router.put('/:id', verifyToken, isCTVOrAdmin, reportController.updateReport);
+
 export default router;

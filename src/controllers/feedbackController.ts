@@ -87,3 +87,29 @@ export const reviewFeedback = async (req: any, res: Response) => {
     res.status(400).json({ message: "Lỗi xử lý phản hồi" });
   }
 };
+
+// 6. Xóa feedback
+export const deleteFeedback = async (req: any, res: Response) => {
+  const { id } = req.params;
+  const admin = req.user;
+  try {
+    const feedback = await prisma.feedback.findUnique({
+      where: { id },
+      include: { user: { select: { fullName: true } } }
+    });
+
+    if (!feedback) {
+      return res.status(404).json({ message: "Không tìm thấy phản hồi" });
+    }
+
+    await prisma.feedback.delete({
+      where: { id }
+    });
+
+    await createLog(admin, "XÓA PHẢN HỒI", `Xóa phản hồi của: ${feedback.user?.fullName}`);
+
+    res.json({ success: true, message: "Đã xóa phản hồi thành công!" });
+  } catch (error) {
+    res.status(400).json({ message: "Lỗi xóa phản hồi" });
+  }
+};

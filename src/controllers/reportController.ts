@@ -27,10 +27,11 @@ export const createReport = async (req: any, res: any) => {
 
     // 2. XỬ LÝ FILE THEO HỆ express-fileupload (KHÔNG DÙNG MULTER NỮA)
     if (req.files) {
+      console.log("DETECTED FILES:", Object.keys(req.files)); // DEBUG
+
       // Xử lý Upload Ảnh đại diện (Thumbnail)
       if (req.files.thumbnail) {
         const thumbFile = req.files.thumbnail;
-        // Upload trực tiếp từ đường dẫn tạm tempFilePath
         const result = await cloudinary.uploader.upload(thumbFile.tempFilePath, {
           folder: "yt_reports/thumbnails"
         });
@@ -40,19 +41,24 @@ export const createReport = async (req: any, res: any) => {
       // Xử lý Upload file PDF (pdfFile)
       if (req.files.pdfFile) {
         const pdfFile = req.files.pdfFile;
+        console.log("Uploading PDF (Raw - N/A):", pdfFile.name);
 
         const result = await cloudinary.uploader.upload(pdfFile.tempFilePath, {
           folder: "yt_reports/pdf",
-          resource_type: "raw", // Bắt buộc để nhận file không phải ảnh
-          format: 'pdf',        // THÊM DÒNG NÀY: Ép Cloudinary nhận diện đuôi .pdf
-          use_filename: true,   // Giữ tên file gốc của sếp
-          unique_filename: false // Giúp link file nhìn đẹp hơn, không bị chèn mã loằng ngoằng
+          resource_type: "raw",
+          use_filename: true,
+          unique_filename: false
         });
+
+        console.log("PDF Upload API Result:", result);
         pdfUrl = result.secure_url;
       }
+    } else {
+      console.log("NO FILES UPLOADED");
     }
 
-    // 3. Lưu vào DB theo đúng Schema Prisma của sếp
+    // 3. Lưu vào DB
+    console.log("Saving Report with PDF URL:", pdfUrl);
     const newReport = await prisma.report.create({
       data: {
         title,
@@ -77,14 +83,29 @@ export const createReport = async (req: any, res: any) => {
 
 export const getAllReportsAdmin = async (req: any, res: any) => {
   try {
-    const reports = await prisma.report.findMany({
-      include: {
-        category: { select: { name: true } },
-        user: { select: { fullName: true, avatarUrl: true } }
-      },
-      orderBy: { createdAt: 'desc' }
+    const { page = 1 } = req.query;
+    const limit = 5;
+    const skip = (Number(page) - 1) * limit;
+
+    const [reports, total] = await Promise.all([
+      prisma.report.findMany({
+        include: {
+          category: { select: { name: true } },
+          user: { select: { fullName: true, avatarUrl: true } }
+        },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: skip
+      }),
+      prisma.report.count()
+    ]);
+
+    res.json({
+      success: true,
+      reports,
+      totalPages: Math.ceil(total / limit),
+      currentPage: Number(page)
     });
-    res.json({ success: true, reports });
   } catch (error) {
     res.status(500).json({ message: "Lỗi lấy danh sách báo cáo sếp ơi!" });
   }
@@ -139,5 +160,73 @@ export const getPublicReports = async (req: any, res: any) => {
     });
   } catch (error: any) {
     res.status(500).json({ message: "Lỗi lấy dữ liệu công khai: " + error.message });
+  }
+};
+
+export const deleteReport = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    await prisma.report.delete({ where: { id } });
+    res.json({ success: true, message: "Đã xóa báo cáo!" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi xóa báo cáo" });
+  }
+};
+
+export const updateReport = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { title, categoryId, description } = req.body;
+
+    const oldReport = await prisma.report.findUnique({ where: { id } });
+    if (!oldReport) return res.status(404).json({ message: "Không tìm thấy báo cáo" });
+
+    let updateData: any = {
+      title,
+      description,
+      categoryId: Number(categoryId)
+    };
+
+    if (title && title !== oldReport.title) {
+      const rawSlug = slugify(title, { lower: true, locale: 'vi', strict: true });
+      updateData.slug = `${rawSlug}-${Date.now()}`;
+    }
+
+    if (req.files) {
+      console.log("UPDATE FILES:", Object.keys(req.files));
+
+      if (req.files.thumbnail) {
+        const thumbFile = req.files.thumbnail;
+        const result = await cloudinary.uploader.upload(thumbFile.tempFilePath, {
+          folder: "yt_reports/thumbnails"
+        });
+        updateData.thumbnail = result.secure_url;
+      }
+
+      if (req.files.pdfFile) {
+        const pdfFile = req.files.pdfFile;
+        console.log("Updating PDF (Raw - N/A):", pdfFile.name);
+
+        const result = await cloudinary.uploader.upload(pdfFile.tempFilePath, {
+          folder: "yt_reports/pdf",
+          resource_type: "raw",
+          use_filename: true,
+          unique_filename: false
+        });
+
+        console.log("Updated PDF URL:", result.secure_url);
+        updateData.pdfUrl = result.secure_url;
+      }
+    }
+
+    const updatedReport = await prisma.report.update({
+      where: { id },
+      data: updateData
+    });
+
+    res.json({ success: true, report: updatedReport });
+  } catch (error: any) {
+    console.error("Lỗi update:", error);
+    res.status(500).json({ message: "Lỗi cập nhật báo cáo" });
   }
 };

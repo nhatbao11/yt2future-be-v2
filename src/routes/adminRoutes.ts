@@ -11,6 +11,7 @@ router.use(verifyToken, isAdmin);
 
 
 router.get('/logs', verifyToken, isAdmin, adminController.getAuditLogs);
+router.get('/stats', verifyToken, isAdmin, adminController.getDashboardStats);
 router.get('/users', listUsers);
 router.put('/users/role', updateRole);
 router.delete('/users/:id', removeUser);
