@@ -35,7 +35,7 @@ class AuthService {
     const fullName = profile.name || profile.given_name || 'Người dùng Google';
     const avatarUrl = profile.picture || profile.image || null;
 
-    if (!email) throw new Error("Không lấy được Email từ Google sếp ơi!");
+    if (!email) throw new Error("auth.googleAuthError");
 
     // 1. Tìm xem sếp đã có trong cái DB mới reset chưa
     let user = await prisma.user.findUnique({
@@ -48,12 +48,12 @@ class AuthService {
       user = await prisma.user.create({
         data: {
           email: email,
-          fullName: fullName,   // Lưu tên từ Google
-          avatarUrl: avatarUrl, // Lưu ảnh từ Google
-          role: Role.USER,      // Mặc định là USER
+          fullName: fullName,
+          avatarUrl: avatarUrl,
+          role: Role.USER,
           roleTitle: 'Thành viên mới',
-          password: null        // Đăng nhập Google không cần mật khẩu
-        }
+          password: null
+        } as any
       });
     }
 
@@ -70,7 +70,7 @@ class AuthService {
     const { email, password, fullName, avatarUrl } = data;
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) throw new Error('Email này đã có chủ rồi sếp!');
+    if (existingUser) throw new Error('auth.emailExists');
 
     // Mã hóa mật khẩu
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -83,7 +83,7 @@ class AuthService {
         password: hashedPassword,
         role: Role.USER,
         roleTitle: 'Thành viên mới'
-      }
+      } as any
     });
   }
 
@@ -96,7 +96,7 @@ class AuthService {
 
     // Kiểm tra User và Password có tồn tại không
     if (!user || !user.password || !(await bcrypt.compare(password, user.password))) {
-      throw new Error('Thông tin không chính xác sếp ơi!');
+      throw new Error('auth.invalidCredentials');
     }
 
     const token = this.generateToken(user);
@@ -120,7 +120,7 @@ class AuthService {
         createdAt: true
       }
     });
-    if (!user) throw new Error('Không tìm thấy người dùng');
+    if (!user) throw new Error('auth.userNotFound');
     return user;
   }
 

@@ -18,9 +18,9 @@ export const sendFeedback = async (req: any, res: Response) => {
         status: "PENDING"
       }
     });
-    res.json({ success: true, message: "Đã gửi feedback thành công!" });
+    res.json({ success: true, message: req.t('feedback.sendSuccess') });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi gửi phản hồi" });
+    res.status(500).json({ message: req.t('feedback.sendError') });
   }
 };
 
@@ -35,7 +35,7 @@ export const getHomeFeedbacks = async (req: Request, res: Response) => {
     });
     res.json({ success: true, feedbacks });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi lấy dữ liệu trang chủ" });
+    res.status(500).json({ message: req.t('feedback.fetchHomeError') });
   }
 };
 
@@ -49,7 +49,7 @@ export const getPendingFeedbacks = async (req: Request, res: Response) => {
     });
     res.json({ success: true, feedbacks });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi lấy danh sách chờ duyệt" });
+    res.status(500).json({ message: req.t('feedback.fetchPendingError') });
   }
 };
 
@@ -62,7 +62,7 @@ export const getAllFeedbacks = async (req: Request, res: Response) => {
     });
     res.json({ success: true, feedbacks });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi lấy danh sách tổng hợp" });
+    res.status(500).json({ message: req.t('feedback.fetchAllError') });
   }
 };
 
@@ -78,13 +78,17 @@ export const reviewFeedback = async (req: any, res: Response) => {
     });
 
     const actionLabel = status === 'APPROVED' ? "DUYỆT PHẢN HỒI" : "TỪ CHỐI PHẢN HỒI";
-    const detail = `${status === 'APPROVED' ? 'Chấp nhận' : 'Loại bỏ'} của: ${feedback.user?.fullName}`;
+    const actionText = status === 'APPROVED' ? req.t('admin.approved') : req.t('admin.rejected');
+    const detail = req.t('admin.feedbackReviewed', {
+      action: actionText,
+      user: feedback.user?.fullName
+    });
 
     await createLog(admin, actionLabel, detail);
 
-    res.json({ success: true, message: `Thao tác ${status} thành công!` });
+    res.json({ success: true, message: req.t('feedback.reviewSuccess', { status }) });
   } catch (error) {
-    res.status(400).json({ message: "Lỗi xử lý phản hồi" });
+    res.status(400).json({ message: req.t('feedback.reviewError') });
   }
 };
 
@@ -99,17 +103,18 @@ export const deleteFeedback = async (req: any, res: Response) => {
     });
 
     if (!feedback) {
-      return res.status(404).json({ message: "Không tìm thấy phản hồi" });
+      return res.status(404).json({ message: req.t('feedback.notFound') });
     }
 
     await prisma.feedback.delete({
       where: { id }
     });
 
-    await createLog(admin, "XÓA PHẢN HỒI", `Xóa phản hồi của: ${feedback.user?.fullName}`);
+    const detail = req.t('admin.feedbackDeleted', { user: feedback.user?.fullName });
+    await createLog(admin, "XÓA PHẢN HỒI", detail);
 
-    res.json({ success: true, message: "Đã xóa phản hồi thành công!" });
+    res.json({ success: true, message: req.t('feedback.deleteSuccess') });
   } catch (error) {
-    res.status(400).json({ message: "Lỗi xóa phản hồi" });
+    res.status(400).json({ message: req.t('feedback.deleteError') });
   }
 };

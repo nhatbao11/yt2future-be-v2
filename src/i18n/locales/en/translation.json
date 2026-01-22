@@ -1,0 +1,89 @@
+{
+    "auth": {
+        "loginSuccess": "Login successful!",
+        "loginFailed": "Invalid email or password",
+        "registerSuccess": "Registration successful",
+        "emailExists": "This email is already registered!",
+        "invalidToken": "Invalid token",
+        "unauthorized": "You are not authorized",
+        "tokenExpired": "Session expired",
+        "userNotFound": "User not found",
+        "logoutSuccess": "Logged out successfully!",
+        "googleAuthError": "Google authentication error!",
+        "invalidCredentials": "Invalid credentials!"
+    },
+    "validation": {
+        "required": "{{field}} is required",
+        "invalidEmail": "Invalid email",
+        "minLength": "{{field}} must be at least {{min}} characters",
+        "maxLength": "{{field}} must not exceed {{max}} characters",
+        "passwordMismatch": "Password confirmation does not match"
+    },
+    "errors": {
+        "serverError": "Server error",
+        "notFound": "Not found",
+        "badRequest": "Bad request",
+        "forbidden": "Access denied",
+        "unauthorized": "Unauthorized access"
+    },
+    "success": {
+        "created": "Created successfully",
+        "updated": "Updated successfully",
+        "deleted": "Deleted successfully"
+    },
+    "user": {
+        "profileUpdated": "Profile updated successfully",
+        "passwordChanged": "Password changed successfully",
+        "listError": "Error fetching user list",
+        "roleUpdated": "User role updated successfully",
+        "deleteError": "Error deleting user",
+        "cannotDeleteSelf": "You cannot delete yourself!",
+        "cannotDeleteAdmin": "Cannot delete another admin. Demote them first!",
+        "userNotExists": "User does not exist"
+    },
+    "report": {
+        "titleRequired": "Report title is required!",
+        "createSuccess": "Report created successfully",
+        "createError": "Error creating report: {{error}}",
+        "deleteSuccess": "Report deleted successfully!",
+        "deleteError": "Error deleting report",
+        "updateSuccess": "Report updated successfully",
+        "updateError": "Error updating report",
+        "notFound": "Report not found",
+        "fetchError": "Error fetching reports!",
+        "reviewError": "Error reviewing report",
+        "publicFetchError": "Error fetching public data: {{error}}"
+    },
+    "feedback": {
+        "sendSuccess": "Feedback sent successfully!",
+        "sendError": "Error sending feedback",
+        "reviewSuccess": "{{status}} operation successful!",
+        "reviewError": "Error processing feedback",
+        "deleteSuccess": "Feedback deleted successfully!",
+        "deleteError": "Error deleting feedback",
+        "notFound": "Feedback not found",
+        "fetchHomeError": "Error fetching homepage data",
+        "fetchPendingError": "Error fetching pending list",
+        "fetchAllError": "Error fetching complete list"
+    },
+    "admin": {
+        "rateLimitExceeded": "Too many operations, please slow down!",
+        "statsError": "Error fetching dashboard statistics",
+        "logsError": "Error retrieving audit logs",
+        "logCreated": "Log entry created",
+        "roleUpdated": "Changed {{email}} to {{role}}",
+        "userDeleted": "Deleted user: {{email}}",
+        "feedbackReviewed": "{{action}} feedback from: {{user}}",
+        "feedbackDeleted": "Deleted feedback from: {{user}}",
+        "approved": "Approved",
+        "rejected": "Rejected"
+    },
+    "category": {
+        "createSuccess": "Category created successfully",
+        "createError": "Error creating category",
+        "deleteSuccess": "Category deleted successfully",
+        "deleteError": "Error deleting category",
+        "alreadyExists": "Category already exists",
+        "fetchError": "Error fetching categories"
+    }
+}

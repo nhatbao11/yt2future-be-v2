@@ -14,10 +14,10 @@ export const sendFeedback = async (req, res) => {
                 status: "PENDING"
             }
         });
-        res.json({ success: true, message: "Đã gửi feedback thành công!" });
+        res.json({ success: true, message: req.t('feedback.sendSuccess') });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi gửi phản hồi" });
+        res.status(500).json({ message: req.t('feedback.sendError') });
     }
 };
 // 2. Lấy feedback cho Slide Home (Status APPROVED)
@@ -32,7 +32,7 @@ export const getHomeFeedbacks = async (req, res) => {
         res.json({ success: true, feedbacks });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi lấy dữ liệu trang chủ" });
+        res.status(500).json({ message: req.t('feedback.fetchHomeError') });
     }
 };
 // 3. Lấy feedback chờ duyệt cho Admin
@@ -46,7 +46,7 @@ export const getPendingFeedbacks = async (req, res) => {
         res.json({ success: true, feedbacks });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi lấy danh sách chờ duyệt" });
+        res.status(500).json({ message: req.t('feedback.fetchPendingError') });
     }
 };
 // 4. Lấy tất cả feedback (Tổng hợp)
@@ -59,7 +59,7 @@ export const getAllFeedbacks = async (req, res) => {
         res.json({ success: true, feedbacks });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi lấy danh sách tổng hợp" });
+        res.status(500).json({ message: req.t('feedback.fetchAllError') });
     }
 };
 // 5. Duyệt hoặc Từ chối feedback
@@ -73,12 +73,16 @@ export const reviewFeedback = async (req, res) => {
             include: { user: { select: { fullName: true } } }
         });
         const actionLabel = status === 'APPROVED' ? "DUYỆT PHẢN HỒI" : "TỪ CHỐI PHẢN HỒI";
-        const detail = `${status === 'APPROVED' ? 'Chấp nhận' : 'Loại bỏ'} của: ${feedback.user?.fullName}`;
+        const actionText = status === 'APPROVED' ? req.t('admin.approved') : req.t('admin.rejected');
+        const detail = req.t('admin.feedbackReviewed', {
+            action: actionText,
+            user: feedback.user?.fullName
+        });
         await createLog(admin, actionLabel, detail);
-        res.json({ success: true, message: `Thao tác ${status} thành công!` });
+        res.json({ success: true, message: req.t('feedback.reviewSuccess', { status }) });
     }
     catch (error) {
-        res.status(400).json({ message: "Lỗi xử lý phản hồi" });
+        res.status(400).json({ message: req.t('feedback.reviewError') });
     }
 };
 // 6. Xóa feedback
@@ -91,16 +95,17 @@ export const deleteFeedback = async (req, res) => {
             include: { user: { select: { fullName: true } } }
         });
         if (!feedback) {
-            return res.status(404).json({ message: "Không tìm thấy phản hồi" });
+            return res.status(404).json({ message: req.t('feedback.notFound') });
         }
         await prisma.feedback.delete({
             where: { id }
         });
-        await createLog(admin, "XÓA PHẢN HỒI", `Xóa phản hồi của: ${feedback.user?.fullName}`);
-        res.json({ success: true, message: "Đã xóa phản hồi thành công!" });
+        const detail = req.t('admin.feedbackDeleted', { user: feedback.user?.fullName });
+        await createLog(admin, "XÓA PHẢN HỒI", detail);
+        res.json({ success: true, message: req.t('feedback.deleteSuccess') });
     }
     catch (error) {
-        res.status(400).json({ message: "Lỗi xóa phản hồi" });
+        res.status(400).json({ message: req.t('feedback.deleteError') });
     }
 };
 //# sourceMappingURL=feedbackController.js.map

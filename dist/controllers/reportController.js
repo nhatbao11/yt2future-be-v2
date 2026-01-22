@@ -8,7 +8,7 @@ export const createReport = async (req, res) => {
         const { title, categoryId, description, status } = req.body;
         const userId = req.user.id;
         if (!title) {
-            return res.status(400).json({ message: "Sếp quên nhập tiêu đề báo cáo rồi!" });
+            return res.status(400).json({ message: req.t('report.titleRequired') });
         }
         // 1. Tạo slug tự động
         const rawSlug = slugify(title, {
@@ -61,11 +61,11 @@ export const createReport = async (req, res) => {
                 userId: userId,
             }
         });
-        res.json({ success: true, report: newReport });
+        res.json({ success: true, report: newReport, message: req.t('report.createSuccess') });
     }
     catch (error) {
         console.error("Lỗi Controller:", error);
-        res.status(500).json({ message: "Lỗi tạo báo cáo: " + error.message });
+        res.status(500).json({ message: req.t('report.createError', { error: error.message }) });
     }
 };
 // --- CÁC HÀM KHÁC GIỮ NGUYÊN LOGIC CỦA SẾP ---
@@ -94,7 +94,7 @@ export const getAllReportsAdmin = async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi lấy danh sách báo cáo sếp ơi!" });
+        res.status(500).json({ message: req.t('report.fetchError') });
     }
 };
 export const reviewReport = async (req, res) => {
@@ -107,7 +107,7 @@ export const reviewReport = async (req, res) => {
         res.json({ success: true, report: updated });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi duyệt bài" });
+        res.status(500).json({ message: req.t('report.reviewError') });
     }
 };
 export const getPublicReports = async (req, res) => {
@@ -143,17 +143,17 @@ export const getPublicReports = async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi lấy dữ liệu công khai: " + error.message });
+        res.status(500).json({ message: req.t('report.publicFetchError', { error: error.message }) });
     }
 };
 export const deleteReport = async (req, res) => {
     try {
         const { id } = req.params;
         await prisma.report.delete({ where: { id } });
-        res.json({ success: true, message: "Đã xóa báo cáo!" });
+        res.json({ success: true, message: req.t('report.deleteSuccess') });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi xóa báo cáo" });
+        res.status(500).json({ message: req.t('report.deleteError') });
     }
 };
 export const updateReport = async (req, res) => {
@@ -162,7 +162,7 @@ export const updateReport = async (req, res) => {
         const { title, categoryId, description } = req.body;
         const oldReport = await prisma.report.findUnique({ where: { id } });
         if (!oldReport)
-            return res.status(404).json({ message: "Không tìm thấy báo cáo" });
+            return res.status(404).json({ message: req.t('report.notFound') });
         let updateData = {
             title,
             description,
@@ -198,11 +198,11 @@ export const updateReport = async (req, res) => {
             where: { id },
             data: updateData
         });
-        res.json({ success: true, report: updatedReport });
+        res.json({ success: true, report: updatedReport, message: req.t('report.updateSuccess') });
     }
     catch (error) {
         console.error("Lỗi update:", error);
-        res.status(500).json({ message: "Lỗi cập nhật báo cáo" });
+        res.status(500).json({ message: req.t('report.updateError') });
     }
 };
 //# sourceMappingURL=reportController.js.map

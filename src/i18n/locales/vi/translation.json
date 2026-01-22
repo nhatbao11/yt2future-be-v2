@@ -1,0 +1,89 @@
+{
+    "auth": {
+        "loginSuccess": "Đăng nhập thành công sếp ơi!",
+        "loginFailed": "Email hoặc mật khẩu không đúng",
+        "registerSuccess": "Đăng ký thành công",
+        "emailExists": "Email này đã có chủ rồi sếp!",
+        "invalidToken": "Token không hợp lệ",
+        "unauthorized": "Bạn không có quyền truy cập",
+        "tokenExpired": "Phiên đăng nhập đã hết hạn",
+        "userNotFound": "Không tìm thấy người dùng",
+        "logoutSuccess": "Đã đăng xuất thành công!",
+        "googleAuthError": "Lỗi xác thực Google!",
+        "invalidCredentials": "Thông tin không chính xác sếp ơi!"
+    },
+    "validation": {
+        "required": "{{field}} là bắt buộc",
+        "invalidEmail": "Email không hợp lệ",
+        "minLength": "{{field}} phải có ít nhất {{min}} ký tự",
+        "maxLength": "{{field}} không được vượt quá {{max}} ký tự",
+        "passwordMismatch": "Mật khẩu xác nhận không khớp"
+    },
+    "errors": {
+        "serverError": "Lỗi máy chủ",
+        "notFound": "Không tìm thấy",
+        "badRequest": "Yêu cầu không hợp lệ",
+        "forbidden": "Truy cập bị từ chối",
+        "unauthorized": "Không có quyền truy cập"
+    },
+    "success": {
+        "created": "Tạo thành công",
+        "updated": "Cập nhật thành công",
+        "deleted": "Xóa thành công"
+    },
+    "user": {
+        "profileUpdated": "Cập nhật hồ sơ thành công",
+        "passwordChanged": "Đổi mật khẩu thành công",
+        "listError": "Lỗi lấy danh sách nhân sự",
+        "roleUpdated": "Cập nhật vai trò thành công",
+        "deleteError": "Lỗi hệ thống khi xóa user",
+        "cannotDeleteSelf": "Sếp không thể tự 'sa thải' chính mình!",
+        "cannotDeleteAdmin": "Không thể xóa Admin khác. Hãy hạ cấp họ trước!",
+        "userNotExists": "User không tồn tại"
+    },
+    "report": {
+        "titleRequired": "Sếp quên nhập tiêu đề báo cáo rồi!",
+        "createSuccess": "Tạo báo cáo thành công",
+        "createError": "Lỗi tạo báo cáo: {{error}}",
+        "deleteSuccess": "Đã xóa báo cáo!",
+        "deleteError": "Lỗi xóa báo cáo",
+        "updateSuccess": "Cập nhật báo cáo thành công",
+        "updateError": "Lỗi cập nhật báo cáo",
+        "notFound": "Không tìm thấy báo cáo",
+        "fetchError": "Lỗi lấy danh sách báo cáo sếp ơi!",
+        "reviewError": "Lỗi duyệt bài",
+        "publicFetchError": "Lỗi lấy dữ liệu công khai: {{error}}"
+    },
+    "feedback": {
+        "sendSuccess": "Đã gửi feedback thành công!",
+        "sendError": "Lỗi gửi phản hồi",
+        "reviewSuccess": "Thao tác {{status}} thành công!",
+        "reviewError": "Lỗi xử lý phản hồi",
+        "deleteSuccess": "Đã xóa phản hồi thành công!",
+        "deleteError": "Lỗi xóa phản hồi",
+        "notFound": "Không tìm thấy phản hồi",
+        "fetchHomeError": "Lỗi lấy dữ liệu trang chủ",
+        "fetchPendingError": "Lỗi lấy danh sách chờ duyệt",
+        "fetchAllError": "Lỗi lấy danh sách tổng hợp"
+    },
+    "admin": {
+        "rateLimitExceeded": "Sếp thao tác nhanh quá, bình tĩnh chút!",
+        "statsError": "Lỗi lấy thống kê dashboard",
+        "logsError": "Lỗi truy xuất nhật ký",
+        "logCreated": "Đã tạo log",
+        "roleUpdated": "Đổi {{email}} thành {{role}}",
+        "userDeleted": "Xóa user: {{email}}",
+        "feedbackReviewed": "{{action}} phản hồi của: {{user}}",
+        "feedbackDeleted": "Xóa phản hồi của: {{user}}",
+        "approved": "Chấp nhận",
+        "rejected": "Loại bỏ"
+    },
+    "category": {
+        "createSuccess": "Tạo danh mục thành công",
+        "createError": "Lỗi tạo danh mục",
+        "deleteSuccess": "Xóa danh mục thành công",
+        "deleteError": "Lỗi xóa danh mục",
+        "alreadyExists": "Danh mục đã tồn tại",
+        "fetchError": "Lỗi lấy danh sách danh mục"
+    }
+}

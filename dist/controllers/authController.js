@@ -7,12 +7,16 @@ export const register = async (req, res) => {
         const user = await AuthService.registerUser(req.body);
         res.status(201).json({
             success: true,
-            message: 'Đăng ký thành công',
+            message: req.t('auth.registerSuccess'),
             userId: user.id
         });
     }
     catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        // Check if error message is a translation key
+        const message = error.message.startsWith('auth.')
+            ? req.t(error.message)
+            : error.message;
+        res.status(400).json({ success: false, message });
     }
 };
 /**
@@ -31,13 +35,16 @@ export const login = async (req, res) => {
         });
         return res.json({
             success: true,
-            message: 'Đăng nhập thành công sếp ơi!',
+            message: req.t('auth.loginSuccess'),
             user,
             token // Trả về Token để FE (Server Action) có thể lấy và set Cookie
         });
     }
     catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        const message = error.message.startsWith('auth.')
+            ? req.t(error.message)
+            : error.message;
+        res.status(400).json({ success: false, message });
     }
 };
 /**
@@ -51,7 +58,10 @@ export const getMe = async (req, res) => {
         res.json({ success: true, user });
     }
     catch (error) {
-        res.status(404).json({ success: false, message: error.message });
+        const message = error.message.startsWith('auth.')
+            ? req.t(error.message)
+            : error.message;
+        res.status(404).json({ success: false, message });
     }
 };
 /**
@@ -60,7 +70,7 @@ export const getMe = async (req, res) => {
 export const logout = (req, res) => {
     res.clearCookie('yt2future_token', { path: '/', httpOnly: true, sameSite: 'lax' });
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    return res.status(200).json({ success: true, message: 'Đã đăng xuất thành công!' });
+    return res.status(200).json({ success: true, message: req.t('auth.logoutSuccess') });
 };
 /**
  * 5. ĐĂNG NHẬP GOOGLE
@@ -81,7 +91,10 @@ export const grantGoogleRole = async (req, res) => {
         return res.json({ success: true, user });
     }
     catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        const message = error.message.startsWith('auth.')
+            ? req.t(error.message)
+            : req.t('auth.googleAuthError');
+        res.status(400).json({ success: false, message });
     }
 };
 //# sourceMappingURL=authController.js.map

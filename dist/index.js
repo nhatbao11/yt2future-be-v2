@@ -4,6 +4,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload'; // THÊM THƯ VIỆN XỬ LÝ FILE
 import { v2 as cloudinary } from 'cloudinary';
+import i18next from './i18n/config.js';
+import * as i18nextMiddleware from 'i18next-http-middleware';
 // Import Routes - GIỮ NGUYÊN TOÀN BỘ CỦA SẾP
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
@@ -21,6 +23,8 @@ cloudinary.config({
 console.log(">>> [System] Cloudinary:", process.env.CLOUDINARY_CLOUD_NAME ? "READY" : "MISSING");
 // B. MIDDLEWARES
 app.use(cookieParser());
+// i18n middleware - PHẢI ĐẶT TRƯỚC CÁC ROUTES
+app.use(i18nextMiddleware.handle(i18next));
 app.use(cors({
     origin: (origin, callback) => {
         const allowedOrigins = [process.env.FRONTEND_URL || 'https://yt2future.com', 'http://localhost:3000'];

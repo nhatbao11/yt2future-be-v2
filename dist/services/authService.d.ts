@@ -20,6 +20,7 @@ declare class AuthService {
             roleTitle: string | null;
             createdAt: Date;
             updatedAt: Date;
+            isDeleted: boolean;
         };
     }>;
     /**
@@ -35,6 +36,7 @@ declare class AuthService {
         roleTitle: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isDeleted: boolean;
     }>;
     /**
      * 4. ĐĂNG NHẬP TRUYỀN THỐNG
@@ -51,6 +53,7 @@ declare class AuthService {
             roleTitle: string | null;
             createdAt: Date;
             updatedAt: Date;
+            isDeleted: boolean;
         };
     }>;
     /**
@@ -92,6 +95,7 @@ declare class AuthService {
         roleTitle: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isDeleted: boolean;
     }>;
     /**
      * 8. XÓA USER
@@ -106,6 +110,7 @@ declare class AuthService {
         roleTitle: string | null;
         createdAt: Date;
         updatedAt: Date;
+        isDeleted: boolean;
     }>;
 }
 declare const _default: AuthService;

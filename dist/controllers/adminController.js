@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export const adminLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 30,
-    message: { message: "Sếp thao tác nhanh quá, bình tĩnh chút!" }
+    message: (req) => ({ message: req.t('admin.rateLimitExceeded') })
 });
 // 1. Lấy danh sách User - Cập nhật để lấy thêm roleTitle
 export const listUsers = async (req, res) => {
@@ -27,7 +27,7 @@ export const listUsers = async (req, res) => {
         res.json({ success: true, users });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi lấy danh sách nhân sự" });
+        res.status(500).json({ message: req.t('user.listError') });
     }
 };
 // src/controllers/adminController.ts
@@ -47,8 +47,9 @@ export const updateRole = async (req, res) => {
             }
         });
         // Ghi Log lịch sử
-        await createLog(req.user, "CẬP NHẬT VAI TRÒ", `Đổi ${updatedUser.email} thành ${role}`);
-        res.json({ success: true, user: updatedUser }); // Trả về object đã update
+        const logDetail = req.t('admin.roleUpdated', { email: updatedUser.email, role });
+        await createLog(req.user, "CẬP NHẬT VAI TRÒ", logDetail);
+        res.json({ success: true, user: updatedUser, message: req.t('user.roleUpdated') }); // Trả về object đã update
     }
     catch (error) {
         res.status(400).json({ success: false });
@@ -61,20 +62,21 @@ export const removeUser = async (req, res) => {
     try {
         const userToDelete = await prisma.user.findUnique({ where: { id } });
         if (!userToDelete)
-            return res.status(404).json({ message: "User không tồn tại" });
+            return res.status(404).json({ message: req.t('user.userNotExists') });
         // BẢO VỆ TỐI CAO: Chặn tự xóa hoặc xóa Admin khác
         if (id === adminId) {
-            return res.status(400).json({ message: "Sếp không thể tự 'sa thải' chính mình!" });
+            return res.status(400).json({ message: req.t('user.cannotDeleteSelf') });
         }
         if (userToDelete.role === 'ADMIN') {
-            return res.status(403).json({ message: "Không thể xóa Admin khác. Hãy hạ cấp họ trước!" });
+            return res.status(403).json({ message: req.t('user.cannotDeleteAdmin') });
         }
         await prisma.user.delete({ where: { id } });
-        await createLog(req.user, "XÓA NGƯỜI DÙNG", userToDelete.email);
-        res.json({ success: true, message: "Đã xóa user vĩnh viễn" });
+        const logDetail = req.t('admin.userDeleted', { email: userToDelete.email });
+        await createLog(req.user, "XÓA NGƯỜI DÙNG", logDetail);
+        res.json({ success: true, message: req.t('success.deleted') });
     }
     catch (error) {
-        res.status(400).json({ message: "Lỗi hệ thống khi xóa user" });
+        res.status(400).json({ message: req.t('user.deleteError') });
     }
 };
 // 4. Lấy nhật ký hệ thống - Phân trang 5 log
@@ -99,7 +101,7 @@ export const getAuditLogs = async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi truy xuất nhật ký" });
+        res.status(500).json({ message: req.t('admin.logsError') });
     }
 };
 // 5. Lấy thống kê Dashboard (MỚI)
@@ -122,7 +124,7 @@ export const getDashboardStats = async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ message: "Lỗi lấy thống kê dashboard" });
+        res.status(500).json({ message: req.t('admin.statsError') });
     }
 };
 //# sourceMappingURL=adminController.js.map
