@@ -95,7 +95,7 @@ export const grantGoogleRole = async (req: Request, res: Response) => {
       path: '/'
     });
 
-    return res.json({ success: true, user });
+    return res.json({ success: true, user, token });
   } catch (error: any) {
     const message = error.message.startsWith('auth.')
       ? req.t(error.message)
