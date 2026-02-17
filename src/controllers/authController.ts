@@ -97,6 +97,7 @@ export const grantGoogleRole = async (req: Request, res: Response) => {
 
     return res.json({ success: true, user, token });
   } catch (error: any) {
+    console.error("Google Auth Backend Error:", error); // Log lỗi thật ra console
     const message = error.message.startsWith('auth.')
       ? req.t(error.message)
       : req.t('auth.googleAuthError');

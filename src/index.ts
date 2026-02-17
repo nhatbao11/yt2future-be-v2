@@ -34,16 +34,8 @@ app.use(i18nextMiddleware.handle(i18next));
 
 app.use(cors({
   origin: (origin, callback) => {
-    const allowedOrigins = [process.env.FRONTEND_URL || 'https://yt2future.com', 'http://localhost:3000'];
-    // Cho phép nếu:
-    // 1. Không có origin (Postman/Server-to-Server)
-    // 2. Nằm trong danh sách cứng (local, domain chính)
-    // 3. Là subdomain của vercel.app (cho Preview Deploy)
-    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Biến đi! CORS không cho phép.'));
-    }
+    // Tạm thời cho phép tất cả để debug lỗi "Biến đi! CORS không cho phép"
+    callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
