@@ -27,12 +27,16 @@ export const sendFeedback = async (req: any, res: Response) => {
 // 2. Lấy feedback cho Slide Home (Status APPROVED)
 export const getHomeFeedbacks = async (req: Request, res: Response) => {
   try {
-    const feedbacks = await prisma.feedback.findMany({
+    const feedbacksRaw = await prisma.feedback.findMany({
       where: { status: "APPROVED" },
       include: { user: { select: { fullName: true, avatarUrl: true } } },
       take: 10,
       orderBy: { createdAt: 'desc' }
     });
+
+    // Lọc bỏ các feedback mà user đã bị xóa (user = null)
+    const feedbacks = feedbacksRaw.filter(f => f.user);
+
     res.json({ success: true, feedbacks });
   } catch (error) {
     res.status(500).json({ message: req.t('feedback.fetchHomeError') });
