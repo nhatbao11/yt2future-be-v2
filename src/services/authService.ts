@@ -1,8 +1,7 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
+import { prisma } from '../lib/prisma.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key_cua_yt_capital';
 
 class AuthService {

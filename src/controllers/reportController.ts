@@ -1,8 +1,8 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../lib/prisma.js';
 import _slugify from 'slugify';
+import fs from 'fs';
 
-const prisma = new PrismaClient();
 const slugify = _slugify as unknown as (string: string, options?: any) => string;
 
 export const createReport = async (req: any, res: any) => {
@@ -27,8 +27,6 @@ export const createReport = async (req: any, res: any) => {
 
     // 2. XỬ LÝ FILE THEO HỆ express-fileupload (KHÔNG DÙNG MULTER NỮA)
     if (req.files) {
-      console.log("DETECTED FILES:", Object.keys(req.files)); // DEBUG
-
       // Xử lý Upload Ảnh đại diện (Thumbnail)
       if (req.files.thumbnail) {
         const thumbFile = req.files.thumbnail;
@@ -36,29 +34,24 @@ export const createReport = async (req: any, res: any) => {
           folder: "yt_reports/thumbnails"
         });
         thumbnail = result.secure_url;
+        fs.unlink(thumbFile.tempFilePath, () => { }); // Xóa temp file sau upload
       }
 
       // Xử lý Upload file PDF (pdfFile)
       if (req.files.pdfFile) {
         const pdfFile = req.files.pdfFile;
-        console.log("Uploading PDF (Raw - N/A):", pdfFile.name);
-
         const result = await cloudinary.uploader.upload(pdfFile.tempFilePath, {
           folder: "yt_reports/pdf",
           resource_type: "raw",
           use_filename: true,
           unique_filename: false
         });
-
-        console.log("PDF Upload API Result:", result);
         pdfUrl = result.secure_url;
+        fs.unlink(pdfFile.tempFilePath, () => { }); // Xóa temp file sau upload
       }
-    } else {
-      console.log("NO FILES UPLOADED");
     }
 
     // 3. Lưu vào DB
-    console.log("Saving Report with PDF URL:", pdfUrl);
     const newReport = await prisma.report.create({
       data: {
         title,
@@ -193,29 +186,25 @@ export const updateReport = async (req: any, res: any) => {
     }
 
     if (req.files) {
-      console.log("UPDATE FILES:", Object.keys(req.files));
-
       if (req.files.thumbnail) {
         const thumbFile = req.files.thumbnail;
         const result = await cloudinary.uploader.upload(thumbFile.tempFilePath, {
           folder: "yt_reports/thumbnails"
         });
         updateData.thumbnail = result.secure_url;
+        fs.unlink(thumbFile.tempFilePath, () => { }); // Xóa temp file sau upload
       }
 
       if (req.files.pdfFile) {
         const pdfFile = req.files.pdfFile;
-        console.log("Updating PDF (Raw - N/A):", pdfFile.name);
-
         const result = await cloudinary.uploader.upload(pdfFile.tempFilePath, {
           folder: "yt_reports/pdf",
           resource_type: "raw",
           use_filename: true,
           unique_filename: false
         });
-
-        console.log("Updated PDF URL:", result.secure_url);
         updateData.pdfUrl = result.secure_url;
+        fs.unlink(pdfFile.tempFilePath, () => { }); // Xóa temp file sau upload
       }
     }
 

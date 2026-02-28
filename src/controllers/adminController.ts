@@ -2,9 +2,8 @@ import type { Request, Response } from 'express';
 import AuthService from '../services/authService.js';
 import rateLimit from 'express-rate-limit';
 import { createLog } from '../services/logService.js';
-import { PrismaClient, Role } from '@prisma/client'; // Import Role Enum từ Prisma
-
-const prisma = new PrismaClient();
+import { Role } from '@prisma/client';
+import { prisma } from '../lib/prisma.js';
 
 // Giới hạn thao tác Admin để bảo mật
 export const adminLimiter = rateLimit({

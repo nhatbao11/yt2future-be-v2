@@ -1,8 +1,6 @@
 import type { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { createLog } from '../services/logService.js';
-
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma.js';
 
 // 1. Gửi feedback
 export const sendFeedback = async (req: any, res: Response) => {

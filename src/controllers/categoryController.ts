@@ -1,8 +1,6 @@
 import type { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../lib/prisma.js';
 import { createLog } from '../services/logService.js'; // Đường dẫn tới file log của sếp
-
-const prisma = new PrismaClient();
 
 // 1. Lấy tất cả danh mục (Dùng cho bộ lọc ở FE)
 export const getAllCategories = async (req: Request, res: Response) => {

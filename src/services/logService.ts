@@ -1,6 +1,5 @@
 // src/services/logService.ts
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma.js';
 
 export const createLog = async (admin: any, action: string, target: string) => {
   try {

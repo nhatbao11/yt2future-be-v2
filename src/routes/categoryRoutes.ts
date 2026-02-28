@@ -1,9 +1,8 @@
 import express from 'express';
 import { getAllCategories, createCategory } from '../controllers/categoryController.js';
 import { verifyToken, isAdmin } from '../middlewares/authMiddleware.js';
-import { PrismaClient } from '@prisma/client'; // THÊM DÒNG NÀY
+import { prisma } from '../lib/prisma.js';
 
-const prisma = new PrismaClient(); // KHỞI TẠO BIẾN PRISMA
 const router = express.Router();
 
 // 1. Công khai: Ai cũng lấy được danh sách danh mục để lọc bài viết

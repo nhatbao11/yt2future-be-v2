@@ -1,10 +1,9 @@
-import { Router, type Response } from 'express'; // Thêm Response vào đây
-import { PrismaClient } from '@prisma/client'; // Thêm Prisma để chạy lệnh update
+import { Router, type Response } from 'express';
+import { prisma } from '../lib/prisma.js';
 import { register, login, getMe, logout, grantGoogleRole } from '../controllers/authController.js';
 import { isAdmin, verifyToken } from '../middlewares/authMiddleware.js';
 import * as feedbackController from '../controllers/feedbackController.js';
 
-const prisma = new PrismaClient(); // Khởi tạo prisma
 const router = Router();
 
 // --- Các route cơ bản ---
@@ -42,10 +41,9 @@ router.put('/update-user', verifyToken, async (req: any, res: Response) => {
       }
     });
   } catch (error: any) {
-    console.error("Lỗi Prisma Update:", error.message);
     res.status(500).json({
       success: false,
-      message: "Lỗi cập nhật DB sếp ơi!",
+      message: "Lỗi cập nhật DB!",
       error: error.message
     });
   }
