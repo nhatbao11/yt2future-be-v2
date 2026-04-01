@@ -82,6 +82,7 @@ model ViewLog {
   user         User?    @relation(fields: [userId], references: [id])
 }
 
+
 model Feedback {
   id        String   @id @default(uuid())
   content   String
@@ -91,6 +92,55 @@ model Feedback {
   createdAt DateTime @default(now())
 
   user      User?    @relation(fields: [userId], references: [id])
+}
+
+// --- STOCK DATA MODELS ---
+model MarketIndexDaily {
+  id         Int      @id @default(autoincrement())
+  symbol     String   // VNINDEX, VN30, VN30F1M, HNX, etc
+  date       DateTime
+  open       Float?
+  high       Float?
+  low        Float?
+  close      Float?
+  volume     BigInt?
+  change     Float?   // Giá trị thay đổi so với hôm trước
+  changePct  Float?   // % thay đổi
+  ref        Float?   // Giá tham chiếu
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([symbol, date])
+}
+
+model TopStockDaily {
+  id         Int      @id @default(autoincrement())
+  date       DateTime
+  symbol     String
+  rank       Int      // top 1,2,3,4,5
+  category   String   // gainer, loser, foreignBuy, foreignSell
+  value      Float?   // giá trị mua/bán ròng, % tăng/giảm
+  volume     BigInt?
+  changePct  Float?
+  createdAt  DateTime @default(now())
+
+  @@unique([date, symbol, category])
+}
+
+model ForeignFlowDaily {
+  id         Int      @id @default(autoincrement())
+  date       DateTime
+  symbol     String?  // null = toàn thị trường, hoặc mã cụ thể
+  buyValue   BigInt?
+  sellValue  BigInt?
+  netValue   BigInt?  // mua-bán
+  buyVolume  BigInt?
+  sellVolume BigInt?
+  netVolume  BigInt?
+  rom        Float?   // room ngoại còn lại (%)
+  createdAt  DateTime @default(now())
+
+  @@unique([date, symbol])
 }
 
 model AuditLog {

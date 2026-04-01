@@ -3,3 +3,10 @@ node_modules
 .env
 
 /generated/prisma
+
+# Build output (run `npm run build` on server / CI)
+dist/
+
+# Never commit compiled artifacts inside src/ (TypeScript sources only)
+src/**/*.js
+src/**/*.d.ts
