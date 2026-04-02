@@ -1,0 +1,5 @@
+# Python sync (vnstock -> PostgreSQL). Cài trong venv: pip install -r scripts/requirements-sync.txt
+python-dotenv>=1.0.0
+psycopg2-binary>=2.9.9
+pandas>=2.0.0
+vnstock>=3.0.0
