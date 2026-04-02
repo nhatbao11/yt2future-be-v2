@@ -11,6 +11,11 @@ const INDICES = [
 ] as const;
 
 const VN_TIMEZONE = 'Asia/Ho_Chi_Minh';
+/** Nếu DNS trả về IP private (10.x) trên VPS, đặt trong .env hoặc map IP public trong /etc/hosts và giữ hostname này. */
+const FINFO_API_BASE = (process.env.FINFO_API_BASE_URL || 'https://finfo-api.vndirect.com.vn').replace(
+  /\/$/,
+  ''
+);
 const BOOTSTRAP_YEARS = Number(process.env.SYNC_BOOTSTRAP_YEARS || '5');
 const HOLIDAYS = (process.env.VN_MARKET_HOLIDAYS || '')
   .split(',')
@@ -106,7 +111,7 @@ function formatAxiosError(err: unknown, url: string): string {
 }
 
 async function fetchIndexHistory(symbol: string, from: string, to: string): Promise<VndirectIndexPoint[]> {
-  const url = `https://finfo-api.vndirect.com.vn/v4/index_series?sort=date&series_code=${symbol}&from=${from}&to=${to}&fields=date,open,close,high,low,average,change,changePercent,ref,volume`;
+  const url = `${FINFO_API_BASE}/v4/index_series?sort=date&series_code=${symbol}&from=${from}&to=${to}&fields=date,open,close,high,low,average,change,changePercent,ref,volume`;
   try {
     const response = await axios.get(url, {
       timeout: 30000,
@@ -194,7 +199,7 @@ async function syncSymbol(symbol: string, vndirectCode: string, todayVN: string)
 
 async function main(): Promise<void> {
   const todayVN = getVNDateString();
-  console.log(`[sync] start for VN date ${todayVN}`);
+  console.log(`[sync] start for VN date ${todayVN} (FINFO_API_BASE=${FINFO_API_BASE})`);
 
   if (!isTradingDay(todayVN)) {
     console.log('[sync] skip: weekend/holiday.');

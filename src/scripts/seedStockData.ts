@@ -4,6 +4,11 @@ import axios from 'axios';
 
 const prisma = new PrismaClient();
 
+const FINFO_API_BASE = (process.env.FINFO_API_BASE_URL || 'https://finfo-api.vndirect.com.vn').replace(
+  /\/$/,
+  ''
+);
+
 // Danh sách chỉ số cần lấy (theo yêu cầu dashboard)
 const INDICES = [
   { symbol: 'VNINDEX', vndirectCode: 'VNINDEX' },
@@ -13,7 +18,7 @@ const INDICES = [
 
 // Hàm lấy dữ liệu lịch sử chỉ số từ VNDIRECT (API public, không cần token)
 async function fetchIndexHistory(symbol: string, from: string, to: string) {
-  const url = `https://finfo-api.vndirect.com.vn/v4/index_series?sort=date&series_code=${symbol}&from=${from}&to=${to}&fields=date,open,close,high,low,average,change,changePercent,ref,volume`;
+  const url = `${FINFO_API_BASE}/v4/index_series?sort=date&series_code=${symbol}&from=${from}&to=${to}&fields=date,open,close,high,low,average,change,changePercent,ref,volume`;
   const res = await axios.get(url);
   return res.data.data;
 }
