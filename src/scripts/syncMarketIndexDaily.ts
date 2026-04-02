@@ -1,5 +1,6 @@
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 const prisma = new PrismaClient();
 
@@ -88,10 +89,40 @@ function toBigInt(value: unknown): bigint | null {
   return BigInt(Math.round(n));
 }
 
+function formatAxiosError(err: unknown, url: string): string {
+  if (!isAxiosError(err)) {
+    return err instanceof Error ? err.message : String(err);
+  }
+  const status = err.response?.status;
+  const code = err.code;
+  const data = err.response?.data;
+  const snippet =
+    typeof data === 'string'
+      ? data.slice(0, 240)
+      : data != null
+        ? JSON.stringify(data).slice(0, 240)
+        : '';
+  return `${err.message} (code=${code ?? 'n/a'} status=${status ?? 'n/a'}) ${snippet ? `body=${snippet}` : ''} url=${url}`;
+}
+
 async function fetchIndexHistory(symbol: string, from: string, to: string): Promise<VndirectIndexPoint[]> {
   const url = `https://finfo-api.vndirect.com.vn/v4/index_series?sort=date&series_code=${symbol}&from=${from}&to=${to}&fields=date,open,close,high,low,average,change,changePercent,ref,volume`;
-  const response = await axios.get(url, { timeout: 20000 });
-  return Array.isArray(response.data?.data) ? response.data.data : [];
+  try {
+    const response = await axios.get(url, {
+      timeout: 30000,
+      headers: {
+        Accept: 'application/json',
+        'User-Agent': 'yt2future-market-sync/1.0',
+      },
+      validateStatus: () => true,
+    });
+    if (response.status >= 400) {
+      throw new Error(`HTTP ${response.status} ${JSON.stringify(response.data).slice(0, 200)}`);
+    }
+    return Array.isArray(response.data?.data) ? response.data.data : [];
+  } catch (err) {
+    throw new Error(formatAxiosError(err, url));
+  }
 }
 
 async function syncSymbol(symbol: string, vndirectCode: string, todayVN: string): Promise<void> {
@@ -112,7 +143,13 @@ async function syncSymbol(symbol: string, vndirectCode: string, todayVN: string)
   }
 
   console.log(`[${symbol}] fetching ${from} -> ${to}`);
-  const rows = await fetchIndexHistory(vndirectCode, from, to);
+  let rows: VndirectIndexPoint[];
+  try {
+    rows = await fetchIndexHistory(vndirectCode, from, to);
+  } catch (e) {
+    console.error(`[${symbol}] API error:`, e instanceof Error ? e.message : e);
+    return;
+  }
   const freshRows = rows.filter((row) => row?.date && row.date >= from && row.date <= to);
   if (freshRows.length === 0) {
     console.log(`[${symbol}] no new rows from source.`);
@@ -173,7 +210,8 @@ async function main(): Promise<void> {
 
 main()
   .catch((error) => {
-    console.error('[sync] failed:', error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[sync] failed:', msg);
     process.exitCode = 1;
   })
   .finally(async () => {
